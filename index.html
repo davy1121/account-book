@@ -391,6 +391,36 @@
     .form-grid { grid-template-columns: 1fr; }
     header.app .slogan { display: none; }
   }
+
+  /* ===== 整站简洁化：弱化撞色、收敛留白、折叠更多选项 ===== */
+  body {
+    background:
+      radial-gradient(760px 420px at 4% -8%, rgba(255, 122, 217, .15), transparent 60%),
+      radial-gradient(680px 400px at 100% -6%, rgba(255, 197, 51, .14), transparent 62%),
+      radial-gradient(820px 460px at 50% 115%, rgba(47, 183, 255, .13), transparent 60%),
+      linear-gradient(180deg, #fdf4f9 0%, #fdfaf3 48%, #f4f9ff 100%);
+  }
+  .card { border-color: rgba(228, 202, 218, .55); box-shadow: 0 6px 18px rgba(120, 90, 120, .08); }
+  .btn.primary { background: linear-gradient(135deg, #ff72b0, #ff4f9e); box-shadow: 0 5px 12px rgba(255, 79, 158, .26); }
+  .btn.primary:hover { box-shadow: 0 8px 16px rgba(255, 79, 158, .34); }
+  .stats .stat { background: #fff; border-color: #f6e4ec; box-shadow: 0 4px 12px rgba(120, 90, 120, .05); }
+  .stats .stat:nth-child(1), .stats .stat:nth-child(2), .stats .stat:nth-child(3),
+  .stats .stat:nth-child(4), .stats .stat:nth-child(5),
+  .stats .stat.warn, .stats .stat.over { background: #fff; border-color: #f6e4ec; }
+  .stats .stat .k { font-size: 11.5px; }
+  .stats .stat .v { font-size: 20px; }
+  .stats .stat:hover { transform: translateY(-2px); }
+  .segp { border-color: #ffe0ed; color: #b98ba4; }
+  .segp.on-all { background: linear-gradient(135deg, #ff7ab8, #ff9dbd); }
+  .segp.on-food { background: linear-gradient(135deg, #4fd1a0, #34c98a); }
+  .segp.on-other { background: linear-gradient(135deg, #a58bf0, #8f74e8); }
+  .morebox { border: 1px dashed #f0c8dd; background: rgba(255, 248, 252, .55); border-radius: 16px; padding: 10px 14px; margin: 2px 0 12px; }
+  .morebox > summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #d45a97; list-style: none; user-select: none; }
+  .morebox > summary::-webkit-details-marker { display: none; }
+  .morebox > summary::before { content: "+ "; font-weight: 900; }
+  .morebox[open] > summary::before { content: "\2013 "; }
+  .morebox .field { margin-top: 6px; }
+  .morebox .hint { font-size: 12px; }
 </style>
 </head>
 <body>
@@ -453,8 +483,7 @@
     <div class="form-grid">
       <div class="field"><label>日期</label><input type="date" id="dateInput"></div>
       <div class="field"><label>金额（元）</label><input type="number" id="amountInput" min="0.01" step="0.01" placeholder="0.00"></div>
-      <div class="field"><label>物品名称</label><input type="text" id="nameInput" maxlength="40" placeholder="如：午餐 / 地铁 / 咖啡"></div>
-      <div class="field"><label>克重（g，选填）</label><input type="number" id="gramsInput" min="1" step="10" placeholder="如：200"></div>
+      <div class="field full"><label>物品名称</label><input type="text" id="nameInput" maxlength="40" placeholder="如：午餐 / 地铁 / 咖啡"></div>
       <div class="field full"><label>物品图片（可选）</label>
         <div class="picpick" id="picpick">
           <img id="picPreview" alt="" style="display:none">
@@ -463,6 +492,13 @@
         <input type="file" id="fileInput" accept="image/*">
       </div>
     </div>
+    <details class="morebox">
+      <summary>克重（选填）</summary>
+      <div class="row">
+        <div class="field" style="flex:1;min-width:150px"><label>克重（g）</label><input type="number" id="gramsInput" min="1" step="10" placeholder="如 200"></div>
+        <span class="hint">留空则按"常见一份"估算热量；填写后按克重换算，在名称里写"鸡胸肉 200g"同样有效。</span>
+      </div>
+    </details>
     <div class="catfield">
       <span class="hint">分类</span>
       <span class="catseg">
@@ -470,7 +506,7 @@
         <button type="button" class="segp" id="catFood">吃饭花销</button>
         <button type="button" class="segp" id="catOther">其他花销</button>
       </span>
-      <span class="hint" id="catHint">自动：名称能识别为食物即归入「吃饭」</span>
+      <span class="hint" id="catHint">自动：像食物的名称归入「吃饭」</span>
     </div>
     <div class="catfield" id="mealSeg">
       <span class="hint">餐次</span>
@@ -485,7 +521,7 @@
     <div class="submit-row">
       <button class="btn primary" id="addBtn">记录这笔花费</button>
     </div>
-    <div class="small-tip">规则：系统把本月预算平均分配到每一天。某天花费超过当天额度时，将提示超支，可选择"使用其他日期的金额"（从本月剩余天数额度中预支）。食物类可填克重（如 200g），热量页将按每 100g 参考热量更精确估算；或在名称里直接写"鸡胸肉 200g"。</div>
+    <div class="small-tip">预算按天平分，超支会提醒、可借用其他日期额度；食物填克重可让热量页算得更准。</div>
   </div>
 
   <!-- 明细 -->
@@ -526,9 +562,9 @@
       <div class="chip"><b id="calRecords">0</b><span>今日记账笔数</span></div>
     </div>
 
-    <div class="card">
-      <div class="section-title" style="margin-bottom:10px">体重目标换算热量</div>
-      <p class="cal-note">输入目前体重、目标体重与计划减重天数，按"约减重 1kg 需多消耗 7700 kcal"自动估算每日热量目标；也可跳过此项，直接在上方设置每日热量目标。</p>
+    <details class="morebox">
+      <summary>按体重自动计算热量目标（可选）</summary>
+      <p class="cal-note" style="margin-top:6px">按"减重 1kg ≈ 多消耗 7700 kcal"估算每日热量缺口。</p>
       <div class="cal-plan-grid">
         <div class="field"><label>目前体重（kg）</label><input type="number" id="planCur" min="1" step="0.1" placeholder="如 65"></div>
         <div class="field"><label>目标体重（kg）</label><input type="number" id="planTarget" min="1" step="0.1" placeholder="如 55"></div>
@@ -547,7 +583,7 @@
         <button class="btn primary" id="planCalc">计算每日热量目标</button>
       </div>
       <div class="plan-result" id="planResult"></div>
-    </div>
+    </details>
 
     <div class="card">
       <div class="section-title" style="margin-bottom:10px">每日热量目标</div>
@@ -561,7 +597,7 @@
 
     <div class="card cal-list">
       <div class="section-title" style="margin-bottom:4px">今日食物摄入</div>
-      <p class="cal-note">自动统计来自首页「记一笔」中日期为今天的记录：名称能识别为食物的自动带出常见单份热量（每份 kcal 为估算值）；识别不准时可直接在右侧输入框修改并自动重算，非食物记录不会计入。</p>
+      <p class="cal-note">自动统计首页今日记录中的食物热量（每份为估算值），可直接改右侧数值修正。</p>
       <div id="calList"></div>
     </div>
   </section>

@@ -421,6 +421,16 @@
   .morebox[open] > summary::before { content: "\2013 "; }
   .morebox .field { margin-top: 6px; }
   .morebox .hint { font-size: 12px; }
+
+  /* 第三页饮食方案选择 */
+  .dietseg { margin: 2px 0 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dietseg .hint { color: #5b6b8c; font-weight: 700; }
+  .dietseg .diet-now { font-size: 12px; color: #2563eb; background: #e8f1ff; border-radius: 99px; padding: 2px 10px; margin-left: auto; }
+  .dietseg .diet-now:empty { display: none; }
+  .dietseg .segp { border-color: #d6e4ff; color: #5f7aa6; }
+  .dietseg .segp:hover { border-color: #3b82f6; color: #2563eb; }
+  .dietseg .segp.diet-on { background: linear-gradient(135deg, #3b82f6, #22d3ee); color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(59, 130, 246, .28); }
+  .rec-recipe em.health { background: #22d3ee; }
 </style>
 </head>
 <body>
@@ -609,6 +619,17 @@
       <div class="cal-big"><span id="recTotal">0</span><i>kcal</i></div>
       <div class="bar"><i id="recBar" style="width:0%"></i></div>
       <div class="cal-target-line" id="recSub"></div>
+    </div>
+    <div class="dietseg">
+      <span class="hint">饮食方案</span>
+      <span class="catseg">
+        <button type="button" class="segp diet-on" data-diet="auto" id="dietAuto">自动</button>
+        <button type="button" class="segp" data-diet="lose" id="dietLose">减脂</button>
+        <button type="button" class="segp" data-diet="gain" id="dietGain">增肌</button>
+        <button type="button" class="segp" data-diet="health" id="dietHealth">健康</button>
+        <button type="button" class="segp" data-diet="keep" id="dietKeep">均衡</button>
+      </span>
+      <span class="diet-now" id="dietNow"></span>
     </div>
     <div id="recWhy"></div>
     <div id="recTopup"></div>
@@ -1624,51 +1645,83 @@
     麻辣烫: "清汤蔬菜肉片（约 350）", 泡面: "荞麦面 + 鸡蛋蔬菜（约 300）", 方便面: "荞麦面 + 鸡蛋蔬菜（约 300）"
   };
   var RECIPES = {
+    // 标签含义：lose=减脂  gain=增肌  health=健康  keep=均衡
+    // 每道菜只归入一种方案，保证切换方案时推荐明显不同
     早餐: [
+      // 减脂
       { n: "燕麦牛奶杯 + 水煮蛋", k: 260, g: ["lose"] },
-      { n: "全麦吐司煎蛋 + 无糖豆浆", k: 340, g: ["keep"] },
-      { n: "鸡蛋蔬菜三明治 + 牛奶", k: 380, g: ["keep", "gain"] },
-      { n: "香蕉花生酱吐司 + 牛奶", k: 470, g: ["gain"] },
       { n: "希腊酸奶莓果杯 + 一小把坚果", k: 290, g: ["lose"] },
       { n: "水煮蛋 2 个 + 蒸玉米 + 美式咖啡", k: 230, g: ["lose"] },
       { n: "小米粥 + 茶叶蛋 + 凉拌黄瓜", k: 300, g: ["lose"] },
+      // 均衡
+      { n: "全麦吐司煎蛋 + 无糖豆浆", k: 340, g: ["keep"] },
+      { n: "鸡蛋蔬菜三明治 + 牛奶", k: 380, g: ["keep"] },
       { n: "皮蛋瘦肉粥 + 全麦馒头（半个）", k: 350, g: ["keep"] },
       { n: "鸡蛋灌饼（少油）+ 无糖豆浆", k: 420, g: ["keep"] },
       { n: "香蕉牛奶麦片杯", k: 390, g: ["keep"] },
+      // 增肌
+      { n: "香蕉花生酱吐司 + 牛奶", k: 470, g: ["gain"] },
       { n: "肉松饭团 + 牛奶", k: 460, g: ["gain"] },
-      { n: "鸡肉贝果三明治 + 脱脂拿铁", k: 510, g: ["gain"] }
+      { n: "鸡肉贝果三明治 + 脱脂拿铁", k: 510, g: ["gain"] },
+      { n: "牛肉芝士三明治 + 牛奶", k: 540, g: ["gain"] },
+      { n: "牛油果煎蛋三明治 + 牛奶", k: 490, g: ["gain"] },
+      // 健康
+      { n: "蒸红薯 + 水煮蛋 + 无糖酸奶", k: 320, g: ["health"] },
+      { n: "燕麦南瓜粥 + 猕猴桃", k: 280, g: ["health"] },
+      { n: "牛奶燕麦粥 + 蓝莓", k: 290, g: ["health"] },
+      { n: "玉米 + 茶叶蛋 + 无糖豆浆", k: 300, g: ["health"] },
+      { n: "山药小米粥 + 蒸蛋羹", k: 260, g: ["health"] }
     ],
     午餐: [
+      // 减脂
       { n: "香煎鸡胸糙米饭 + 西兰花", k: 430, g: ["lose"] },
       { n: "虾仁豆腐时蔬饭", k: 400, g: ["lose"] },
-      { n: "牛肉面（少油）+ 白煮蛋", k: 480, g: ["keep"] },
-      { n: "番茄龙利鱼 + 杂粮饭", k: 470, g: ["keep"] },
-      { n: "照烧鸡腿饭（去皮）+ 时蔬", k: 560, g: ["gain"] },
       { n: "清炒鸡胸时蔬 + 荞麦面", k: 420, g: ["lose"] },
       { n: "蒸鲈鱼 + 藜麦饭 + 绿叶菜", k: 460, g: ["lose"] },
       { n: "泡菜豆腐汤 + 杂粮饭 + 煎蛋", k: 430, g: ["lose"] },
+      // 均衡
+      { n: "牛肉面（少油）+ 白煮蛋", k: 480, g: ["keep"] },
+      { n: "番茄龙利鱼 + 杂粮饭", k: 470, g: ["keep"] },
       { n: "玉米排骨汤面 + 白灼菜心", k: 450, g: ["keep"] },
       { n: "番茄炒蛋盖饭 + 青菜", k: 520, g: ["keep"] },
       { n: "香菇滑鸡饭 + 冬瓜汤", k: 500, g: ["keep"] },
+      // 增肌
+      { n: "照烧鸡腿饭（去皮）+ 时蔬", k: 560, g: ["gain"] },
       { n: "三文鱼牛油果饭", k: 590, g: ["gain"] },
       { n: "卤牛肉饭 + 溏心蛋 + 时蔬", k: 650, g: ["gain"] },
-      { n: "叉烧双拼饭 + 时蔬", k: 700, g: ["gain"] }
+      { n: "叉烧双拼饭 + 时蔬", k: 700, g: ["gain"] },
+      { n: "金枪鱼波奇饭（加牛油果）", k: 620, g: ["gain"] },
+      // 健康
+      { n: "清蒸鳕鱼 + 杂粮饭 + 时蔬", k: 450, g: ["health"] },
+      { n: "豆腐虾仁煲 + 半碗米饭", k: 420, g: ["health"] },
+      { n: "番茄菌菇鸡胸意面（少酱）", k: 450, g: ["health"] },
+      { n: "凉拌鸡丝荞麦面 + 黄瓜", k: 400, g: ["health"] },
+      { n: "蒜蓉蒸虾 + 冬瓜汤 + 玉米段", k: 440, g: ["health"] }
     ],
     晚餐: [
+      // 减脂
       { n: "鸡胸蔬菜汤 + 玉米", k: 330, g: ["lose"] },
       { n: "清蒸鱼 + 杂粮饭 + 青菜", k: 380, g: ["lose"] },
-      { n: "西红柿鸡蛋面", k: 430, g: ["keep"] },
-      { n: "三文鱼牛油果沙拉", k: 470, g: ["keep", "gain"] },
-      { n: "牛排 + 烤蔬菜 + 红薯", k: 580, g: ["gain"] },
       { n: "冬瓜虾仁汤 + 小碗糙米饭", k: 340, g: ["lose"] },
       { n: "香菇蒸鸡 + 凉拌菠菜 + 半根玉米", k: 360, g: ["lose"] },
       { n: "海带豆腐汤 + 白灼虾 + 蒸红薯", k: 380, g: ["lose"] },
+      // 均衡
+      { n: "西红柿鸡蛋面", k: 430, g: ["keep"] },
       { n: "豆腐菌菇煲 + 杂粮饭（小碗）", k: 390, g: ["keep"] },
       { n: "蔬菜鸡肉卷饼 + 无糖酸奶", k: 400, g: ["keep"] },
       { n: "鱼香茄子（少油）+ 半碗米饭", k: 420, g: ["keep"] },
       { n: "鸡肉时蔬炒乌冬（少油）", k: 450, g: ["keep"] },
+      // 增肌
+      { n: "三文鱼牛油果沙拉", k: 470, g: ["gain"] },
+      { n: "牛排 + 烤蔬菜 + 红薯", k: 580, g: ["gain"] },
       { n: "黑椒牛柳意面 + 蔬菜沙拉", k: 520, g: ["gain"] },
-      { n: "红烧排骨 + 半碗米饭 + 青菜", k: 620, g: ["gain"] }
+      { n: "红烧排骨 + 半碗米饭 + 青菜", k: 620, g: ["gain"] },
+      // 健康
+      { n: "番茄鸡肉丸汤 + 时蔬", k: 350, g: ["health"] },
+      { n: "蒜蓉蒸虾 + 西兰花 + 玉米", k: 370, g: ["health"] },
+      { n: "冬瓜虾滑汤 + 蒸紫薯", k: 330, g: ["health"] },
+      { n: "菌菇豆腐汤 + 白灼虾", k: 320, g: ["health"] },
+      { n: "凉拌鸡丝 + 玉米 + 黄瓜", k: 340, g: ["health"] }
     ]
   };
 
@@ -1756,6 +1809,7 @@
     if (rp.g.indexOf(gk) !== -1) {
       if (gk === "lose") return "减脂优选";
       if (gk === "gain") return "增肌优选";
+      if (gk === "health") return "健康优选";
       return "均衡推荐";
     }
     if (rp.g.indexOf("keep") !== -1) return "较均衡";
@@ -1768,20 +1822,25 @@
     for (var i = 0; i < pool.length; i++) if (pool[i].n === name) return pool[i];
     return null;
   }
-  // 近 8 天内用过的食谱名（用于保证每天推荐不重样）
+  // 近 8 天内用过的食谱名（兼容旧版纯日期键与新版「日期::方案」键）
   function recentExclude() {
     var set = {};
     var now = new Date();
+    var allow = {};
     for (var i = 1; i <= 8; i++) {
       var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-      var key = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
-      var lg = db.recLog && db.recLog[key];
-      if (lg) {
-        MEAL_KEYS.forEach(function (m) {
-          (lg[m] || []).forEach(function (nm) { set[nm] = true; });
-        });
-      }
+      allow[d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate())] = true;
     }
+    var log = db.recLog || {};
+    Object.keys(log).forEach(function (k) {
+      var datePart = k.indexOf("::") === -1 ? k : k.slice(0, k.indexOf("::"));
+      if (!allow[datePart]) return;
+      var lg = log[k];
+      if (!lg) return;
+      MEAL_KEYS.forEach(function (m) {
+        (lg[m] || []).forEach(function (nm) { set[nm] = true; });
+      });
+    });
     return set;
   }
   function pickRecipes(meal, maxK, gk, exclude) {
@@ -1833,9 +1892,25 @@
     var total = rows.reduce(function (s, r) { return s + r.kcal; }, 0);
     var target = db.calTarget > 0 ? db.calTarget : 2000;
     var over = Math.max(0, total - target);
-    var goal = getGoalInfo();
     var todayKey = todayStr();
-    var savedLog = (db.recLog || {})[todayKey] || null;
+    var dietMode = db.dietMode || "auto";
+    var autoGoal = getGoalInfo();
+    var dietLabels = { lose: "减脂", gain: "增肌", health: "健康", keep: "均衡" };
+    var effKey = dietMode === "auto" ? autoGoal.key : dietMode;
+    var goal = { key: effKey, label: dietMode === "auto" ? autoGoal.label : dietLabels[effKey] };
+    var recKey = todayKey + "::" + dietMode;
+    var savedLog = (db.recLog || {})[recKey] || null;
+    var dietMap = { auto: "dietAuto", lose: "dietLose", gain: "dietGain", health: "dietHealth", keep: "dietKeep" };
+    Object.keys(dietMap).forEach(function (k) {
+      var el = document.getElementById(dietMap[k]);
+      if (el) el.classList.toggle("diet-on", dietMode === k);
+    });
+    var dietNow = document.getElementById("dietNow");
+    if (dietNow) {
+      dietNow.textContent = dietMode === "auto"
+        ? ("自动 · 跟随目标（" + autoGoal.label + "）")
+        : ("已选方案 · " + (dietLabels[effKey] || effKey) + "饮食");
+    }
     var excludeSet = recentExclude();
     var savedPicks = { 早餐: [], 午餐: [], 晚餐: [] };
     var needSave = false;
@@ -1958,7 +2033,7 @@
 
     if (needSave) {
       if (!db.recLog) db.recLog = {};
-      db.recLog[todayKey] = savedPicks;
+      db.recLog[recKey] = savedPicks;
       save();
     }
     $recMeals.innerHTML = mealsHtml;
@@ -1967,6 +2042,16 @@
   $tabHome.addEventListener("click", function () { showTab("home"); });
   $tabCal.addEventListener("click", function () { showTab("cal"); });
   $tabRec.addEventListener("click", function () { showTab("rec"); });
+
+  // 第三页饮食方案切换：减脂 / 增肌 / 健康 / 均衡 / 自动（随体重目标）
+  document.querySelectorAll(".dietseg .segp").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      ensureDb();
+      db.dietMode = btn.getAttribute("data-diet") || "auto";
+      save();
+      renderRec();
+    });
+  });
 
   // 一键清空：按当前查看范围——所选某天 / 今天 / 整月
   $clearMonthBtn.addEventListener("click", function () {

@@ -322,6 +322,32 @@
   .rec-recipe b { font-weight: 800; color: #1d4ed8; }
   .rec-recipe i { font-style: normal; color: #3b82f6; font-weight: 800; margin-left: 6px; }
 
+  /* —— 第 3 页精简排版 —— */
+  .rec-eaten { margin: 1px 0 0; }
+  .rec-eaten .rec-pill { font-size: 11px; padding: 2px 8px; margin: 1px 3px 1px 0; }
+  .rec-meal-head { margin-bottom: 4px; flex-wrap: wrap; row-gap: 2px; }
+  .m-unh { font-size: 10.5px; color: #be123c; background: #fff1f2; border-radius: 99px; padding: 1.5px 8px; white-space: nowrap; }
+  .rec-verdict { border-radius: 14px; padding: 11px 14px; font-size: 13px; line-height: 1.8; margin: 12px 0 4px; box-shadow: 0 4px 10px rgba(2, 48, 120, .05); }
+  .rec-verdict.ok { background: #e8f9f0; color: #137a46; border-left: 4px solid #34c77b; }
+  .rec-verdict.low { background: #e9f3ff; color: #155aa8; border-left: 4px solid #3b9bf7; }
+  .rec-verdict.warn { background: #fff4e5; color: #a25a00; border-left: 4px solid #f59e0b; }
+  .rec-verdict b { font-weight: 800; }
+  .rec-detail { margin: 4px 0 12px; background: rgba(255, 255, 255, .6); border: 1px solid #d9e7ff; border-radius: 12px; padding: 8px 12px; }
+  .rec-detail summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #1d4ed8; list-style: none; user-select: none; display: flex; align-items: center; gap: 6px; }
+  .rec-detail summary::-webkit-details-marker { display: none; }
+  .rec-detail summary::before { content: "\25B6"; font-size: 10px; transition: transform .2s; }
+  .rec-detail[open] summary::before { transform: rotate(90deg); }
+  .rec-panel { margin-top: 8px; }
+  .rec-cut { font-size: 12.5px; color: #27364f; padding: 6px 8px; border-radius: 9px; background: #f6faff; margin-bottom: 5px; line-height: 1.7; }
+  .rec-cut b { color: #1d4ed8; margin-right: 4px; }
+  .rec-combo { font-size: 12px; color: #64748b; margin: -2px 0 8px 10px; }
+  .rec-one { font-size: 12.5px; color: #475569; margin-top: 5px; }
+  .rec-one.warn { color: #b45309; }
+  .rec-one.ok { color: #15803d; }
+  .rec-recipes { margin-top: 7px; align-items: center; }
+  .rec-recipes-lab { font-size: 11px; font-weight: 700; color: #1d4ed8; background: #dbeafe; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .rec-recipe { padding: 5px 10px; font-size: 12px; }
+
   /* 花销分类 */
   .catfield { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
   .catseg { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -1767,82 +1793,101 @@
     var excludeSet = recentExclude();
     var savedPicks = { 早餐: [], 午餐: [], 晚餐: [] };
     var needSave = false;
+    var warnCount = 0;
+    rows.forEach(function (r) { if (unhealthOf(r.name)) warnCount++; });
 
     $recTotal.textContent = total;
-    $recStatus.textContent = over > 0 ? "今日已超出摄入目标" : "今日摄入在目标内";
-    $recBar.style.width = (over > 0 ? 100 : Math.min(100, total / target * 100)) + "%";
+    $recStatus.textContent = over > 0 ? "已超出摄入目标" : "摄入在目标内";
+    $recBar.style.width = (over > 0 ? 100 : Math.min(100, (total / target) * 100)) + "%";
     $recBar.classList.toggle("warn", over > 0);
     $recSub.innerHTML = db.calTarget > 0
-      ? ("目标 " + target + " kcal · " + (over > 0 ? "已超出 " + over + " kcal" : "还可摄入 " + (target - total) + " kcal"))
+      ? ("目标 " + target + " kcal · " + (over > 0 ? "超出 " + over + " kcal" : "还可摄入 " + (target - total) + " kcal"))
       : "未设定目标，暂按 2000 kcal 评估 · 请到「热量计量」页设置";
 
-    var why = "";
+    // 找出"缺口大"的餐（只在未超标时提示补吃）
+    var deficits = [];
+    if (over <= 0) {
+      MEAL_KEYS.forEach(function (mk) {
+        var grp = rows.filter(function (r) { return r.meal === mk; });
+        var k = grp.reduce(function (s, r) { return s + r.kcal; }, 0);
+        var def = target * MEAL_FRAC[mk] - k;
+        if (def >= 150) deficits.push({ mk: mk, def: def });
+      });
+    }
+
+    var verdict = "";
+    var detail = "";
     if (over > 0) {
       var cuts = planCuts(rows, over);
       var cutSum = cuts.reduce(function (s, c) { return s + c.kcal; }, 0);
-      why = '<div class="card rec-why-card"><div class="section-title">超标分析与调整建议</div>';
-      why += '<div class="rec-line">今天共摄入 ' + total + ' kcal，超出目标 ' + over + ' kcal。当前按「' + goal.label + '」方向为你推荐：<b>优先去掉 / 替换以下高热量项</b>（合计约 ' + cutSum + ' kcal），去掉后摄入回到 ' + Math.max(0, total - cutSum) + ' kcal，基本贴合目标：</div>';
-      why += '<ul class="rec-cutlist">';
-      cuts.forEach(function (c) {
-        why += '<li>· ' + c.meal + '「' + esc(c.name) + '」约 ' + c.kcal + ' kcal</li>';
-      });
-      why += '</ul>';
-      why += '<div class="rec-line">若不想完全去掉，可只把其中的重油高糖项换成低卡替代（见下方三餐建议）。</div></div>';
-    } else {
-      why = '<div class="card rec-why-card"><div class="section-title">今日表现不错 · 三餐优化建议</div>';
-      why += '<div class="rec-line">当前按「' + goal.label + '」方向（' + goal.desc + '）优化三餐：补足蛋白质与蔬果、替换重油高糖选项，把热量花在刀刃上。</div>';
-      var snackRows = rows.filter(function (r) { return r.meal === "加餐"; });
-      var snackK = snackRows.reduce(function (s, r) { return s + r.kcal; }, 0);
-      if (snackK > 150) {
-        why += '<div class="rec-line">今日加餐 / 夜宵约 ' + snackK + ' kcal 偏多，想减脂可把晚间加餐换成无糖酸奶或水果（约可减一半）。</div>';
+      var names = cuts.slice(0, 3).map(function (c) { return c.name; }).join("、");
+      verdict = '<div class="rec-verdict warn"><b>今日超出目标 ' + over + ' kcal</b>，先做减法：去掉「' + esc(names || "部分高热量项") + '」约可减 ' + cutSum + ' kcal，回到目标附近。</div>';
+      if (cuts.length) {
+        var pl = '<div class="rec-panel">';
+        cuts.forEach(function (c) {
+          var sw = findSwap(c.name);
+          pl += '<div class="rec-cut"><b>' + c.meal + '</b>「' + esc(c.name) + '」（' + c.kcal + ' kcal）→ ' + esc(sw || "换清淡做法（清蒸 / 少油少糖）") + '</div>';
+        });
+        pl += '</div>';
+        detail = '<details class="rec-detail" open><summary>怎么减？(' + cuts.length + ' 项，点开看替换方案)</summary>' + pl + '</details>';
       }
-      why += '</div>';
+    } else if (deficits.length) {
+      var dsum = 0;
+      deficits.forEach(function (d) { dsum += d.def; });
+      verdict = '<div class="rec-verdict low"><b>今天吃少了，差约 ' + Math.round(dsum) + ' kcal</b>：' + deficits.map(function (d) { return d.mk; }).join("、") + ' 该补一点，避免睡前饿到暴食。</div>';
+      var pl2 = '<div class="rec-panel">';
+      deficits.forEach(function (d) {
+        var cIdx = d.def >= 350 ? 2 : (d.def >= 240 ? 1 : 0);
+        pl2 += '<div class="rec-cut"><b>' + d.mk + '</b> 差 ' + Math.round(d.def) + ' kcal → 可吃：' + MEAL_TOPUP[d.mk].slice(0, 4).join(" / ") + '</div>';
+        pl2 += '<div class="rec-combo">参考搭配：' + MEAL_COMBO[d.mk][cIdx] + '，吃完回首页记一笔自动同步热量。</div>';
+      });
+      pl2 += '</div>';
+      detail = '<details class="rec-detail"><summary>补哪几餐、怎么补？(' + deficits.length + ' 餐)</summary>' + pl2 + '</details>';
+    } else {
+      verdict = '<div class="rec-verdict ok">摄入在目标内（还差 ' + (target - total) + ' kcal），三餐保持「主食 + 优质蛋白 + 蔬菜」的结构就好。';
+      if (warnCount) verdict += ' 今天出现了 ' + warnCount + ' 项油炸 / 高糖食物，明天优先换成清淡做法更佳。';
+      verdict += '</div>';
+      if (warnCount) {
+        var pl3 = '<div class="rec-panel">';
+        rows.forEach(function (r) {
+          var u = unhealthOf(r.name);
+          if (u) pl3 += '<div class="rec-cut"><b>' + r.meal + '</b>「' + esc(r.name) + '」属' + u.tag + '：' + u.note + '</div>';
+        });
+        pl3 += '</div>';
+        detail = '<details class="rec-detail"><summary>今天有哪些不太健康？(' + warnCount + ' 项)</summary>' + pl3 + '</details>';
+      }
     }
+    $recWhy.innerHTML = verdict + detail;
+    $recTopup.innerHTML = "";
 
     var mealsHtml = "";
     MEAL_KEYS.forEach(function (mk) {
       var grp = rows.filter(function (r) { return r.meal === mk; });
       var mealK = grp.reduce(function (s, r) { return s + r.kcal; }, 0);
       var budget = target * MEAL_FRAC[mk];
-      var cls = mealK > budget * 1.2 ? "over" : (mealK < budget * 0.5 ? "low" : "ok");
-
-      // 健康度评估：出现油炸 / 高糖 / 高油盐加工类食物会扣分
+      var overB = mealK > budget * 1.2;
+      var lowB = mealK < budget * 0.5;
+      var cls = overB ? "over" : (lowB ? "low" : "ok");
       var hscore = 100;
-      grp.forEach(function (r) { var u = unhealthOf(r.name); if (u) hscore -= u.bad; });
+      var badN = 0;
+      grp.forEach(function (r) { var u = unhealthOf(r.name); if (u) { hscore -= u.bad; badN++; } });
       if (hscore < 0) hscore = 0;
       var hlv = hscore >= 85 ? "优" : hscore >= 70 ? "良" : hscore >= 60 ? "一般" : "需改善";
       var hlcls = hscore >= 85 ? "ok" : hscore >= 70 ? "low" : "over";
 
       mealsHtml += '<div class="card rec-meal"><div class="rec-meal-head"><b>' + mk + '</b>';
-      mealsHtml += '<span class="m-health ' + hlcls + '">健康 ' + hscore + '（' + hlv + '）</span>';
-      mealsHtml += '<span class="m-cal ' + cls + '">已摄入 ' + mealK + ' · 建议 ≤ ' + Math.round(budget) + ' kcal</span></div>';
+      mealsHtml += '<span class="m-health ' + hlcls + '">' + hlv + '</span>';
+      if (badN) mealsHtml += '<span class="m-unh">含 ' + badN + ' 项油炸高糖</span>';
+      mealsHtml += '<span class="m-cal ' + cls + '">' + mealK + ' / ≤' + Math.round(budget) + ' kcal</span></div>';
 
-      if (grp.length) mealsHtml += '<div class="rec-line" style="margin-top:0">' + grp.slice(0, 4).map(function (r) { return '<span class="rec-pill">' + esc(r.name) + ' · <b>' + r.kcal + '</b></span>'; }).join("") + (grp.length > 4 ? '<span class="rec-pill">…等 ' + grp.length + ' 项</span>' : '') + '</div>';
-
-      var bads = grp.filter(function (r) { return unhealthOf(r.name); });
-      if (bads.length) {
-        mealsHtml += '<div class="rec-msg" style="color:#be123c;margin-top:6px">不太健康、不太适合减脂人群的：</div>';
-        bads.slice(0, 3).forEach(function (r) {
-          var u = unhealthOf(r.name);
-          mealsHtml += '<div class="rec-bad">· 「' + esc(r.name) + '」（' + r.kcal + ' kcal）属' + u.tag + '：' + u.note + '，减脂期建议少吃，或替换成清淡做法。</div>';
-        });
+      if (grp.length) {
+        mealsHtml += '<div class="rec-line rec-eaten">' + grp.slice(0, 5).map(function (r) { return '<span class="rec-pill">' + esc(r.name) + '·' + r.kcal + '</span>'; }).join("") + (grp.length > 5 ? '<span class="rec-pill">+' + (grp.length - 5) + ' 项</span>' : '') + '</div>';
       }
 
-      if (!grp.length) {
-        mealsHtml += '<div class="rec-msg">这个时段还没有记录。以下「' + goal.label + '」食谱供参考：</div>';
-      } else if (mealK > budget * 1.2) {
-        mealsHtml += '<div class="rec-msg">该餐超出建议份额约 <b>' + Math.round(mealK - budget) + ' kcal</b>，优先做减法：</div>';
-        var heavy = grp.filter(function (r) { return r.kcal >= 300; }).slice(0, 2);
-        heavy.forEach(function (r) {
-          var sw = findSwap(r.name);
-          mealsHtml += '<div class="rec-swap">· 把「' + esc(r.name) + '」（' + r.kcal + ' kcal）换成 ' + (sw ? sw : "更清淡的做法（清蒸 / 少油少糖）") + '</div>';
-        });
-        mealsHtml += '<div class="rec-msg">减脂搭配参考：</div>';
-      } else if (mealK < budget * 0.5) {
-        mealsHtml += '<div class="rec-msg">该餐摄入偏少（比建议低约 ' + Math.round(budget * 0.5 - mealK) + ' kcal），容易引发下一餐暴食，可参考下方食谱补足蛋白质与主食：</div>';
-      } else {
-        mealsHtml += '<div class="rec-msg">该餐与建议份额基本匹配，保持「主食 + 优质蛋白 + 蔬菜」结构即可：</div>';
-      }
+      if (!grp.length) mealsHtml += '<div class="rec-one">这个时段还没吃，直接看推荐：</div>';
+      else if (overB) mealsHtml += '<div class="rec-one warn">这餐偏多 ' + Math.round(mealK - budget) + ' kcal，先精简再参考下方搭配。</div>';
+      else if (lowB) mealsHtml += '<div class="rec-one">低于建议份额，可参考下方补一补。</div>';
+      else mealsHtml += '<div class="rec-one ok">与建议份额匹配，吃得很均衡。</div>';
 
       var rpList = null;
       if (savedLog && savedLog[mk] && savedLog[mk].length) {
@@ -1853,7 +1898,7 @@
         needSave = true;
       }
       savedPicks[mk] = rpList.map(function (rp) { return rp.n; });
-      mealsHtml += '<div class="rec-recipes">';
+      mealsHtml += '<div class="rec-recipes"><span class="rec-recipes-lab">今日推荐</span>';
       rpList.forEach(function (rp) {
         mealsHtml += '<span class="rec-recipe"><b>' + rp.n + '</b> 约' + rp.k + '<i>kcal</i><em class="' + goal.key + '">' + recFit(rp, goal.key) + '</em></span>';
       });
@@ -1865,35 +1910,6 @@
       db.recLog[todayKey] = savedPicks;
       save();
     }
-
-    // 分餐摄入偏少：哪餐少，就推荐补哪一餐
-    var topup = "";
-    if (over <= 0) {
-      var deficits = [];
-      MEAL_KEYS.forEach(function (mk) {
-        var grp = rows.filter(function (r) { return r.meal === mk; });
-        var mealK2 = grp.reduce(function (s, r) { return s + r.kcal; }, 0);
-        var bud2 = target * MEAL_FRAC[mk];
-        var def2 = bud2 - mealK2;
-        if (bud2 > 0 && def2 >= 150) deficits.push({ mk: mk, def: def2 });
-      });
-      if (deficits.length) {
-        topup += '<div class="card rec-why-card rec-topup"><div class="section-title">分餐摄入偏少 · 按餐补吃</div>';
-        topup += '<div class="rec-line">按每餐建议份额（目标 ' + target + ' kcal 的早 30% / 午 40% / 晚 30%）逐一对比后，下面这几餐缺口较大，可从对应清单里补吃（单项为参考估算，少量多次、先补一半看饱腹感）：</div>';
-        deficits.forEach(function (d) {
-          topup += '<div class="tp-row"><span class="tp-lab">' + d.mk + ' 差 ' + Math.round(d.def) + '</span>';
-          MEAL_TOPUP[d.mk].forEach(function (t) {
-            topup += '<span class="rec-pill">' + t + '</span>';
-          });
-          topup += '</div>';
-          var cIdx = d.def >= 350 ? 2 : (d.def >= 240 ? 1 : 0);
-          topup += '<div class="rec-line" style="margin-top:-2px">参考搭配：' + MEAL_COMBO[d.mk][cIdx] + '，之后可回首页记一笔把热量同步上去。</div>';
-        });
-        topup += '</div>';
-      }
-    }
-    $recTopup.innerHTML = topup;
-    $recWhy.innerHTML = why;
     $recMeals.innerHTML = mealsHtml;
   }
 

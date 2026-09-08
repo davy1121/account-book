@@ -327,11 +327,21 @@
   .rec-eaten .rec-pill { font-size: 11px; padding: 2px 8px; margin: 1px 3px 1px 0; }
   .rec-meal-head { margin-bottom: 4px; flex-wrap: wrap; row-gap: 2px; }
   .m-unh { font-size: 10.5px; color: #be123c; background: #fff1f2; border-radius: 99px; padding: 1.5px 8px; white-space: nowrap; }
-  .rec-verdict { border-radius: 14px; padding: 11px 14px; font-size: 13px; line-height: 1.8; margin: 12px 0 4px; box-shadow: 0 4px 10px rgba(2, 48, 120, .05); }
-  .rec-verdict.ok { background: #e8f9f0; color: #137a46; border-left: 4px solid #34c77b; }
-  .rec-verdict.low { background: #e9f3ff; color: #155aa8; border-left: 4px solid #3b9bf7; }
-  .rec-verdict.warn { background: #fff4e5; color: #a25a00; border-left: 4px solid #f59e0b; }
-  .rec-verdict b { font-weight: 800; }
+  .rec-verdict { display: flex; align-items: center; gap: 12px; border-radius: 18px; padding: 13px 15px; margin: 12px 0 4px; color: #fff; position: relative; overflow: hidden; box-shadow: 0 10px 22px rgba(10, 60, 100, .16); }
+  .rec-verdict::after { content: ""; position: absolute; width: 150px; height: 150px; border-radius: 50%; background: rgba(255, 255, 255, .15); right: -34px; top: -58px; }
+  .rec-verdict::before { content: ""; position: absolute; width: 70px; height: 70px; border-radius: 50%; background: rgba(255, 255, 255, .1); right: 70px; bottom: -36px; }
+  .rec-verdict.ok { background: linear-gradient(135deg, #12924b, #34d17c); }
+  .rec-verdict.low { background: linear-gradient(135deg, #2563eb, #0ea5e9); }
+  .rec-verdict.warn { background: linear-gradient(135deg, #e05a12, #f6a521); }
+  .rv-ico { flex: none; width: 54px; height: 54px; border-radius: 17px; background: rgba(255, 255, 255, .24); display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); }
+  .rv-ico svg { width: 30px; height: 30px; }
+  .rv-main { flex: 1; min-width: 0; position: relative; z-index: 1; }
+  .rv-t { font-size: 15.5px; font-weight: 900; letter-spacing: .2px; }
+  .rv-s { font-size: 12.5px; opacity: .95; margin-top: 3px; line-height: 1.7; }
+  .rv-chip { display: inline-block; background: rgba(255, 255, 255, .26); border-radius: 99px; padding: 1px 9px; margin: 0 3px; font-weight: 800; font-size: 11.5px; }
+  .rv-num { flex: none; text-align: center; background: rgba(255, 255, 255, .22); border-radius: 15px; padding: 8px 13px; position: relative; z-index: 1; min-width: 74px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); }
+  .rv-num b { display: block; font-size: 20px; font-weight: 900; line-height: 1.1; }
+  .rv-num small { font-size: 10px; opacity: .94; }
   .rec-detail { margin: 4px 0 12px; background: rgba(255, 255, 255, .6); border: 1px solid #d9e7ff; border-radius: 12px; padding: 8px 12px; }
   .rec-detail summary { cursor: pointer; font-size: 12.5px; font-weight: 700; color: #1d4ed8; list-style: none; user-select: none; display: flex; align-items: center; gap: 6px; }
   .rec-detail summary::-webkit-details-marker { display: none; }
@@ -1821,7 +1831,9 @@
       var cuts = planCuts(rows, over);
       var cutSum = cuts.reduce(function (s, c) { return s + c.kcal; }, 0);
       var names = cuts.slice(0, 3).map(function (c) { return c.name; }).join("、");
-      verdict = '<div class="rec-verdict warn"><b>今日超出目标 ' + over + ' kcal</b>，先做减法：去掉「' + esc(names || "部分高热量项") + '」约可减 ' + cutSum + ' kcal，回到目标附近。</div>';
+      var icoW = '<div class="rv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v5"/><path d="M12 18h.01"/></svg></div>';
+      var cutTxt = cuts.length ? ('先去掉「' + esc(names || "高热量项") + '」，约可减 ' + cutSum + ' kcal') : '注意控制饮食热量';
+      verdict = '<div class="rec-verdict warn">' + icoW + '<div class="rv-main"><div class="rv-t">今日超出目标，先做减法</div><div class="rv-s">' + cutTxt + '，配合下方三餐建议回到目标附近。</div></div><div class="rv-num"><b>+' + over + '</b><small>超出 kcal</small></div></div>';
       if (cuts.length) {
         var pl = '<div class="rec-panel">';
         cuts.forEach(function (c) {
@@ -1834,7 +1846,9 @@
     } else if (deficits.length) {
       var dsum = 0;
       deficits.forEach(function (d) { dsum += d.def; });
-      verdict = '<div class="rec-verdict low"><b>今天吃少了，差约 ' + Math.round(dsum) + ' kcal</b>：' + deficits.map(function (d) { return d.mk; }).join("、") + ' 该补一点，避免睡前饿到暴食。</div>';
+      var icoB = '<div class="rv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg></div>';
+      var chips = deficits.map(function (d) { return '<span class="rv-chip">' + d.mk + '</span>'; }).join("");
+      verdict = '<div class="rec-verdict low">' + icoB + '<div class="rv-main"><div class="rv-t">今天吃少了，该补一补</div><div class="rv-s">总体差约 ' + Math.round(dsum) + ' kcal，建议补：' + chips + '，避免睡前饿到暴食。</div></div><div class="rv-num"><b>-' + Math.round(dsum) + '</b><small>缺口 kcal</small></div></div>';
       var pl2 = '<div class="rec-panel">';
       deficits.forEach(function (d) {
         var cIdx = d.def >= 350 ? 2 : (d.def >= 240 ? 1 : 0);
@@ -1844,9 +1858,10 @@
       pl2 += '</div>';
       detail = '<details class="rec-detail"><summary>补哪几餐、怎么补？(' + deficits.length + ' 餐)</summary>' + pl2 + '</details>';
     } else {
-      verdict = '<div class="rec-verdict ok">摄入在目标内（还差 ' + (target - total) + ' kcal），三餐保持「主食 + 优质蛋白 + 蔬菜」的结构就好。';
-      if (warnCount) verdict += ' 今天出现了 ' + warnCount + ' 项油炸 / 高糖食物，明天优先换成清淡做法更佳。';
-      verdict += '</div>';
+      var icoO = '<div class="rv-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 5-5"/></svg></div>';
+      verdict = '<div class="rec-verdict ok">' + icoO + '<div class="rv-main"><div class="rv-t">表现很棒，保持节奏</div><div class="rv-s">今日摄入在目标内 · 还可摄入 ' + (target - total) + ' kcal';
+      if (warnCount) verdict += ' · 今天有 ' + warnCount + ' 项油炸 / 高糖，明天清淡些更佳';
+      verdict += '。</div></div><div class="rv-num"><b>+' + (target - total) + '</b><small>富余 kcal</small></div></div>';
       if (warnCount) {
         var pl3 = '<div class="rec-panel">';
         rows.forEach(function (r) {

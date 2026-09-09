@@ -163,25 +163,6 @@
   .btn-clear:disabled:hover { background: #f1f5f9; }
   .day-sel { border: 1px solid #fecdd3; background: #fff; color: #be123c; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 5px 12px; margin-left: auto; cursor: pointer; flex-shrink: 0; min-width: 122px; }
   .day-sel:hover { background: #fff1f2; }
-  /* 明细月历表：每天一格，点击查看当天 */
-  .monthcal { background: #fff; border: 1px solid #ffdcea; border-radius: 18px; padding: 10px 12px 12px; margin: 0 0 10px; box-shadow: 0 6px 16px rgba(255, 61, 165, .08); }
-  .mc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
-  .mc-title { font-size: 12.5px; font-weight: 800; color: #d45a97; }
-  .mc-all { border: 1px solid #ffd0e8; background: #fff; color: #e0218a; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
-  .mc-all:hover { background: #fff1f8; }
-  .mc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .mc-w { font-size: 11px; color: #b98ba4; text-align: center; padding: 2px 0; font-weight: 700; }
-  .mc-day { position: relative; min-height: 46px; border: 1.5px solid #ffe3ef; background: #fff7fa; border-radius: 10px; cursor: pointer; padding: 3px 2px; text-align: center; transition: all .15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
-  .mc-day:hover { border-color: #ff9ec8; transform: translateY(-1px); }
-  .mc-day.empty { background: transparent; border-color: transparent; cursor: default; pointer-events: none; }
-  .mc-day b { font-size: 13px; color: #8a5a6f; font-weight: 800; line-height: 1.2; }
-  .mc-day i { font-style: normal; font-size: 10px; font-weight: 700; color: #e0218a; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .mc-day.has { background: #fff0f6; }
-  .mc-day.over { border-color: #ffb4c4; }
-  .mc-day.over i { color: #e11d48; }
-  .mc-day.today { border-color: #ff6ba6; box-shadow: 0 0 0 1px #ff6ba6 inset; }
-  .mc-day.on { background: linear-gradient(135deg, #ff4f9e, #ff8a3d); border-color: transparent; box-shadow: 0 5px 12px rgba(255, 79, 158, .35); }
-  .mc-day.on b, .mc-day.on i { color: #fff; }
   .budget-bird { display: none; align-items: center; justify-content: flex-end; gap: 10px; margin: 0 0 4px; cursor: grab; touch-action: none; user-select: none; }
   .budget-bird.fixed { position: fixed; z-index: 90; margin: 0; }
   .budget-bird.dragging { cursor: grabbing; }
@@ -468,37 +449,38 @@
   body.agent input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, .15); }
   .navbtn#tabAgent.on { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; box-shadow: 0 6px 14px rgba(139, 92, 246, .35); }
 
-  .agent-hero { background: linear-gradient(135deg, #7c3aed, #ec4899); border: none; color: #fff; box-shadow: 0 16px 34px rgba(124, 58, 237, .28); }
-  .agent-hero .cal-label { font-size: 13px; letter-spacing: 1px; opacity: .92; }
-  .agent-hero .ah-nums { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-  .agent-hero .ah-num { flex: 1 1 150px; background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .25); border-radius: 14px; padding: 8px 12px; text-align: left; }
-  .agent-hero .ah-num b { display: block; font-size: 21px; font-weight: 900; letter-spacing: -.3px; }
-  .agent-hero .ah-num span { font-size: 11.5px; opacity: .9; }
+  .agent-hero { background: linear-gradient(135deg, #f4edff, #ffffff); border: 1px solid #e6d9fd; color: #4c1d95; box-shadow: 0 10px 22px rgba(124, 58, 237, .10); padding: 14px 18px; }
+  .agent-hero .cal-label { font-size: 15px; font-weight: 800; color: #7c3aed; letter-spacing: .5px; opacity: 1; }
+  .agent-hero .ag-sub { font-size: 12px; color: #8b7aa8; margin-top: 2px; }
+  .agent-hero .ah-nums { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .agent-hero .ah-num { flex: 1 1 100px; background: #faf7ff; border: 1px solid #ece1fd; border-radius: 12px; padding: 6px 10px; text-align: left; }
+  .agent-hero .ah-num b { display: block; font-size: 18px; font-weight: 900; letter-spacing: -.3px; color: #5b21b6; }
+  .agent-hero .ah-num span { font-size: 11px; color: #9b8ab5; }
 
   .agent-chat { display: flex; flex-direction: column; padding: 12px; }
-  #agentLog { display: flex; flex-direction: column; gap: 10px; max-height: 460px; overflow-y: auto; padding: 4px 2px; }
+  #agentLog { display: flex; flex-direction: column; gap: 8px; max-height: 480px; overflow-y: auto; padding: 4px 2px; }
   .ag-msg { display: flex; gap: 8px; align-items: flex-start; }
   .ag-msg.user { flex-direction: row-reverse; }
-  .ag-avatar { flex: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, #8b5cf6, #ec4899); font-size: 15px; margin-top: 2px; }
+  .ag-avatar { flex: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, #8b5cf6, #ec4899); font-size: 12px; margin-top: 3px; }
   .ag-msg.user .ag-avatar { background: linear-gradient(135deg, #94a3b8, #64748b); }
-  .ag-bubble { max-width: 84%; background: #fff; border: 1px solid #eee2fd; border-radius: 4px 16px 16px 16px; padding: 10px 13px; font-size: 13.5px; line-height: 1.75; color: #3b3545; box-shadow: 0 4px 12px rgba(124, 58, 237, .07); overflow-wrap: break-word; }
-  .ag-msg.user .ag-bubble { background: linear-gradient(135deg, #f3edff, #fdf3f8); border: 1px solid #e5d8fd; border-radius: 16px 4px 16px 16px; }
+  .ag-bubble { max-width: 86%; background: #fff; border: 1px solid #eee2fd; border-radius: 4px 14px 14px 14px; padding: 8px 12px; font-size: 13px; line-height: 1.7; color: #3b3545; box-shadow: 0 3px 10px rgba(124, 58, 237, .06); overflow-wrap: break-word; }
+  .ag-msg.user .ag-bubble { background: linear-gradient(135deg, #f3edff, #fdf3f8); border: 1px solid #e5d8fd; border-radius: 14px 4px 14px 14px; }
   .ag-bubble b { color: #7c3aed; }
   .ag-bubble .ag-tag { display: inline-block; font-size: 11px; font-weight: 700; background: #efe6ff; color: #7c3aed; border-radius: 99px; padding: 1px 8px; margin: 1px 3px 1px 0; }
-  .ag-bubble .ag-line { display: block; margin: 3px 0; }
+  .ag-bubble .ag-line { display: block; margin: 2px 0; }
   .ag-bubble .ag-bar { display: inline-block; height: 9px; border-radius: 99px; vertical-align: middle; background: linear-gradient(90deg, #8b5cf6, #ec4899); }
   .ag-bubble .ag-ok { color: #15803d; font-weight: 700; }
   .ag-bubble .ag-warn { color: #d97706; font-weight: 700; }
   .ag-bubble .ag-bad { color: #dc2626; font-weight: 700; }
-  .ag-bubble ul { margin: 4px 0 2px 18px; padding: 0; }
-  .ag-bubble li { margin: 2px 0; }
-  .ag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 2px 2px; }
+  .ag-bubble ul { margin: 3px 0 1px 18px; padding: 0; }
+  .ag-bubble li { margin: 1px 0; }
+  .ag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 2px 2px; }
   .ag-chip { border: 1px solid #ddd0fa; background: #faf7ff; color: #7c3aed; border-radius: 999px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: .18s; }
   .ag-chip:hover { background: #efe6ff; border-color: #8b5cf6; }
   .agent-inputbar { display: flex; gap: 8px; margin-top: 8px; }
   .agent-inputbar input { flex: 1; border-color: #ddd0fa; border-radius: 999px; }
   .agent-inputbar button { flex: none; }
-  .ag-type { font-size: 12px; color: #a78bfa; padding: 4px 6px; }
+  .ag-type { font-size: 12px; color: #a78bfa; padding: 2px 6px; }
 </style>
 </head>
 <body>
@@ -614,7 +596,6 @@
       <button type="button" class="segp" data-f="other" id="fltOther">其他</button>
       <input type="date" id="daySel" class="day-sel" title="点击日历选择某一天查看明细">
     </div>
-    <div class="monthcal" id="monthCal"></div>
     <div id="expenseList"><div class="empty">本月还没有记录，来记第一笔吧。</div></div>
   </div>
   </section>
@@ -708,8 +689,8 @@
   <!-- ============ 第 4 页：分析助手（紫色主题） ============ -->
   <section class="page" id="pageAgent">
     <div class="card agent-hero">
-      <div class="cal-label">智能分析助手</div>
-      <div style="font-size:15px;font-weight:800;margin-top:2px">用一句话，问我饮食或花销</div>
+      <div class="cal-label">分析助手</div>
+      <div class="ag-sub">问它怎么吃、钱花在哪，基于你的本地记录分析</div>
       <div class="ah-nums">
         <div class="ah-num"><b id="agNumSpent">¥0</b><span>本月已花</span></div>
         <div class="ah-num"><b id="agNumLeft">--</b><span>距预算</span></div>
@@ -720,16 +701,14 @@
       <div id="agentLog"></div>
       <div class="ag-chips" id="agChips">
         <button type="button" class="ag-chip" data-q="我这个月花了多少，超预算了吗？">本月花销</button>
-        <button type="button" class="ag-chip" data-q="钱主要花在了哪里？">花在哪了</button>
-        <button type="button" class="ag-chip" data-q="今天吃了多少热量？三餐怎么安排？">今日饮食</button>
-        <button type="button" class="ag-chip" data-q="我该怎么吃才健康？">怎么吃健康</button>
-        <button type="button" class="ag-chip" data-q="我的消费健康吗？有什么建议？">消费建议</button>
+        <button type="button" class="ag-chip" data-q="钱主要花在了哪里？">钱花在哪</button>
+        <button type="button" class="ag-chip" data-q="今天吃了多少热量？">今日热量</button>
+        <button type="button" class="ag-chip" data-q="我该怎么吃才健康？">怎么吃</button>
       </div>
       <div class="agent-inputbar">
-        <input type="text" id="agInput" maxlength="80" placeholder="问我：比如「早餐吃什么好」「哪几天花钱最多」">
+        <input type="text" id="agInput" maxlength="80" placeholder="问饮食或花销，回车提问">
         <button class="btn primary" id="agSend">提问</button>
       </div>
-      <div class="ag-type">助手基于你的本地记账数据做规则分析，不联网、不上传。</div>
     </div>
   </section>
 
@@ -1112,58 +1091,9 @@
     return "";
   }
 
-  // 月历表：每天一格显示当日花费；点击某天查看当天明细
-  var DAY_NAMES = ["一", "二", "三", "四", "五", "六", "日"];
-  function renderMonthCal() {
-    var box = document.getElementById("monthCal");
-    if (!box) return;
-    var mk = curMonth;
-    var days = daysInMonth(mk);
-    var budget = budgetOf(mk);
-    var daily = budget > 0 ? budget / days : 0;
-    var spendByDay = {};
-    monthExpenses(mk).forEach(function (e) {
-      if (!spendByDay[e.date]) spendByDay[e.date] = 0;
-      spendByDay[e.date] += e.amount;
-    });
-    var first = new Date(parseInt(mk.slice(0, 4), 10), parseInt(mk.slice(5, 7), 10) - 1, 1);
-    var lead = (first.getDay() + 6) % 7; // 周一为第一天
-    var html = '<div class="mc-top"><span class="mc-title">' + mk.replace("-", " 年 ") + " 月 · 点击日期查看当日明细</span></div>";
-    html += '<div class="mc-grid">';
-    DAY_NAMES.forEach(function (w) { html += '<div class="mc-w">' + w + "</div>"; });
-    for (var i = 0; i < lead; i++) html += '<div class="mc-day empty"></div>';
-    for (var d = 1; d <= days; d++) {
-      var ds = mk + "-" + pad(d);
-      var amt = spendByDay[ds] || 0;
-      var cls = "mc-day";
-      if (amt > 0) cls += " has";
-      if (ds === todayStr()) cls += " today";
-      if (ds === curDay) cls += " on";
-      if (daily > 0 && amt > daily) cls += " over";
-      html += '<div class="' + cls + '" data-d="' + ds + '"><b>' + d + "</b>";
-      if (amt > 0) {
-        var txt = amt >= 1000 ? (Math.round(amt / 100) / 10 + "k") : (amt >= 100 ? "" + Math.round(amt) : (Math.round(amt * 10) / 10) + "");
-        html += "<i>¥" + txt + "</i>";
-      }
-      html += "</div>";
-    }
-    html += "</div>";
-    box.innerHTML = html;
-  }
-  document.getElementById("monthCal").addEventListener("click", function (e) {
-    var cell = e.target.closest(".mc-day[data-d]");
-    if (!cell) return;
-    var ds = cell.getAttribute("data-d");
-    if (curDay === ds) { curDay = ""; $daySel.value = ""; }
-    else { curDay = ds; $daySel.value = ds; }
-    renderList();
-    renderMonthCal();
-  });
-
   function renderAll() {
     renderMonthUI();
     renderStats();
-    renderMonthCal();
     renderList();
     renderCats();
   }
@@ -1176,7 +1106,6 @@
   $daySel.addEventListener("change", function () {
     curDay = $daySel.value || "";
     renderList();
-    renderMonthCal();
   });
   document.getElementById("prevMonth").addEventListener("click", function () {
     var p = curMonth.split("-");
@@ -2268,7 +2197,7 @@
     var d = document.createElement("div");
     d.className = "ag-msg";
     d.id = "agThink";
-    d.innerHTML = '<span class="ag-avatar">析</span><span class="ag-bubble ag-type">正在分析你的记账数据…</span>';
+    d.innerHTML = '<span class="ag-avatar">析</span><span class="ag-bubble ag-type">分析中…</span>';
     $agLog.appendChild(d);
     $agLog.scrollTop = $agLog.scrollHeight;
   }
@@ -2288,9 +2217,8 @@
     if (!agentBooted) {
       agentBooted = true;
       agAddBot(
-        agTag("你好") + "我是你的本地记账助手，不看你的数据也能帮你算："
-        + agL("可以问我「本月花销」「花在哪了」「今日饮食」「怎么吃更健康」「消费建议」，或直接打字提问。")
-        + agL("所有分析只在你的浏览器里完成，不会联网上传。")
+        "你好，我是你的记账分析助手。可以问我<b>本月花销、钱花在哪、今日热量、怎么吃更健康</b>，或直接输入问题。"
+        + agL("分析只在你本地完成，不会联网或上传。")
       );
     }
   }

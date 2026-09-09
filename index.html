@@ -163,6 +163,25 @@
   .btn-clear:disabled:hover { background: #f1f5f9; }
   .day-sel { border: 1px solid #fecdd3; background: #fff; color: #be123c; font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 5px 12px; margin-left: auto; cursor: pointer; flex-shrink: 0; min-width: 122px; }
   .day-sel:hover { background: #fff1f2; }
+  /* 明细月历表：每天一格，点击查看当天 */
+  .monthcal { background: #fff; border: 1px solid #ffdcea; border-radius: 18px; padding: 10px 12px 12px; margin: 0 0 10px; box-shadow: 0 6px 16px rgba(255, 61, 165, .08); }
+  .mc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .mc-title { font-size: 12.5px; font-weight: 800; color: #d45a97; }
+  .mc-all { border: 1px solid #ffd0e8; background: #fff; color: #e0218a; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .mc-all:hover { background: #fff1f8; }
+  .mc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .mc-w { font-size: 11px; color: #b98ba4; text-align: center; padding: 2px 0; font-weight: 700; }
+  .mc-day { position: relative; min-height: 46px; border: 1.5px solid #ffe3ef; background: #fff7fa; border-radius: 10px; cursor: pointer; padding: 3px 2px; text-align: center; transition: all .15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+  .mc-day:hover { border-color: #ff9ec8; transform: translateY(-1px); }
+  .mc-day.empty { background: transparent; border-color: transparent; cursor: default; pointer-events: none; }
+  .mc-day b { font-size: 13px; color: #8a5a6f; font-weight: 800; line-height: 1.2; }
+  .mc-day i { font-style: normal; font-size: 10px; font-weight: 700; color: #e0218a; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mc-day.has { background: #fff0f6; }
+  .mc-day.over { border-color: #ffb4c4; }
+  .mc-day.over i { color: #e11d48; }
+  .mc-day.today { border-color: #ff6ba6; box-shadow: 0 0 0 1px #ff6ba6 inset; }
+  .mc-day.on { background: linear-gradient(135deg, #ff4f9e, #ff8a3d); border-color: transparent; box-shadow: 0 5px 12px rgba(255, 79, 158, .35); }
+  .mc-day.on b, .mc-day.on i { color: #fff; }
   .budget-bird { display: none; align-items: center; justify-content: flex-end; gap: 10px; margin: 0 0 4px; cursor: grab; touch-action: none; user-select: none; }
   .budget-bird.fixed { position: fixed; z-index: 90; margin: 0; }
   .budget-bird.dragging { cursor: grabbing; }
@@ -595,6 +614,7 @@
       <button type="button" class="segp" data-f="other" id="fltOther">其他</button>
       <input type="date" id="daySel" class="day-sel" title="点击日历选择某一天查看明细">
     </div>
+    <div class="monthcal" id="monthCal"></div>
     <div id="expenseList"><div class="empty">本月还没有记录，来记第一笔吧。</div></div>
   </div>
   </section>
@@ -1092,9 +1112,58 @@
     return "";
   }
 
+  // 月历表：每天一格显示当日花费；点击某天查看当天明细
+  var DAY_NAMES = ["一", "二", "三", "四", "五", "六", "日"];
+  function renderMonthCal() {
+    var box = document.getElementById("monthCal");
+    if (!box) return;
+    var mk = curMonth;
+    var days = daysInMonth(mk);
+    var budget = budgetOf(mk);
+    var daily = budget > 0 ? budget / days : 0;
+    var spendByDay = {};
+    monthExpenses(mk).forEach(function (e) {
+      if (!spendByDay[e.date]) spendByDay[e.date] = 0;
+      spendByDay[e.date] += e.amount;
+    });
+    var first = new Date(parseInt(mk.slice(0, 4), 10), parseInt(mk.slice(5, 7), 10) - 1, 1);
+    var lead = (first.getDay() + 6) % 7; // 周一为第一天
+    var html = '<div class="mc-top"><span class="mc-title">' + mk.replace("-", " 年 ") + " 月 · 点击日期查看当日明细</span></div>";
+    html += '<div class="mc-grid">';
+    DAY_NAMES.forEach(function (w) { html += '<div class="mc-w">' + w + "</div>"; });
+    for (var i = 0; i < lead; i++) html += '<div class="mc-day empty"></div>';
+    for (var d = 1; d <= days; d++) {
+      var ds = mk + "-" + pad(d);
+      var amt = spendByDay[ds] || 0;
+      var cls = "mc-day";
+      if (amt > 0) cls += " has";
+      if (ds === todayStr()) cls += " today";
+      if (ds === curDay) cls += " on";
+      if (daily > 0 && amt > daily) cls += " over";
+      html += '<div class="' + cls + '" data-d="' + ds + '"><b>' + d + "</b>";
+      if (amt > 0) {
+        var txt = amt >= 1000 ? (Math.round(amt / 100) / 10 + "k") : (amt >= 100 ? "" + Math.round(amt) : (Math.round(amt * 10) / 10) + "");
+        html += "<i>¥" + txt + "</i>";
+      }
+      html += "</div>";
+    }
+    html += "</div>";
+    box.innerHTML = html;
+  }
+  document.getElementById("monthCal").addEventListener("click", function (e) {
+    var cell = e.target.closest(".mc-day[data-d]");
+    if (!cell) return;
+    var ds = cell.getAttribute("data-d");
+    if (curDay === ds) { curDay = ""; $daySel.value = ""; }
+    else { curDay = ds; $daySel.value = ds; }
+    renderList();
+    renderMonthCal();
+  });
+
   function renderAll() {
     renderMonthUI();
     renderStats();
+    renderMonthCal();
     renderList();
     renderCats();
   }
@@ -1107,6 +1176,7 @@
   $daySel.addEventListener("change", function () {
     curDay = $daySel.value || "";
     renderList();
+    renderMonthCal();
   });
   document.getElementById("prevMonth").addEventListener("click", function () {
     var p = curMonth.split("-");

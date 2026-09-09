@@ -198,9 +198,11 @@
     box-shadow: 0 12px 30px rgba(46, 25, 40, .16); backdrop-filter: blur(6px);
   }
   .navbtn {
-    border: none; background: transparent; padding: 9px 24px; border-radius: 999px;
+    border: none; background: transparent; padding: 9px 17px; border-radius: 999px;
     font-size: 14px; font-weight: 700; color: var(--sub); cursor: pointer; transition: .2s; font-family: inherit;
+    white-space: nowrap;
   }
+  @media (max-width: 480px) { .navbtn { padding: 9px 12px; font-size: 13px; } }
   .navbtn#tabHome.on { background: linear-gradient(135deg, #ff4f9e, #ff8a3d); color: #fff; box-shadow: 0 6px 14px rgba(255, 79, 158, .35); }
   .navbtn#tabCal.on  { background: linear-gradient(135deg, #22c55e, #14b8a6); color: #fff; box-shadow: 0 6px 14px rgba(34, 197, 94, .32); }
 
@@ -431,6 +433,53 @@
   .dietseg .segp:hover { border-color: #3b82f6; color: #2563eb; }
   .dietseg .segp.diet-on { background: linear-gradient(135deg, #3b82f6, #22d3ee); color: #fff; border-color: transparent; box-shadow: 0 4px 10px rgba(59, 130, 246, .28); }
   .rec-recipe em.health { background: #22d3ee; }
+
+  /* ---------- 第 4 页：分析助手（紫色主题） ---------- */
+  body.agent {
+    background:
+      radial-gradient(760px 420px at 6% -8%, rgba(168, 85, 247, .22), transparent 60%),
+      radial-gradient(680px 400px at 100% -6%, rgba(236, 72, 153, .16), transparent 62%),
+      radial-gradient(820px 460px at 50% 115%, rgba(139, 92, 246, .16), transparent 60%),
+      linear-gradient(180deg, #faf5ff 0%, #f8f6ff 46%, #f3eefe 100%);
+  }
+  body.agent .section-title { color: #7c3aed; }
+  body.agent .btn.primary { background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 7px 16px rgba(139, 92, 246, .3); }
+  body.agent .btn.primary:hover { box-shadow: 0 10px 20px rgba(139, 92, 246, .38); }
+  body.agent input { border-color: #e2d4fb; }
+  body.agent input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, .15); }
+  .navbtn#tabAgent.on { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; box-shadow: 0 6px 14px rgba(139, 92, 246, .35); }
+
+  .agent-hero { background: linear-gradient(135deg, #7c3aed, #ec4899); border: none; color: #fff; box-shadow: 0 16px 34px rgba(124, 58, 237, .28); }
+  .agent-hero .cal-label { font-size: 13px; letter-spacing: 1px; opacity: .92; }
+  .agent-hero .ah-nums { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .agent-hero .ah-num { flex: 1 1 150px; background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .25); border-radius: 14px; padding: 8px 12px; text-align: left; }
+  .agent-hero .ah-num b { display: block; font-size: 21px; font-weight: 900; letter-spacing: -.3px; }
+  .agent-hero .ah-num span { font-size: 11.5px; opacity: .9; }
+
+  .agent-chat { display: flex; flex-direction: column; padding: 12px; }
+  #agentLog { display: flex; flex-direction: column; gap: 10px; max-height: 460px; overflow-y: auto; padding: 4px 2px; }
+  .ag-msg { display: flex; gap: 8px; align-items: flex-start; }
+  .ag-msg.user { flex-direction: row-reverse; }
+  .ag-avatar { flex: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, #8b5cf6, #ec4899); font-size: 15px; margin-top: 2px; }
+  .ag-msg.user .ag-avatar { background: linear-gradient(135deg, #94a3b8, #64748b); }
+  .ag-bubble { max-width: 84%; background: #fff; border: 1px solid #eee2fd; border-radius: 4px 16px 16px 16px; padding: 10px 13px; font-size: 13.5px; line-height: 1.75; color: #3b3545; box-shadow: 0 4px 12px rgba(124, 58, 237, .07); overflow-wrap: break-word; }
+  .ag-msg.user .ag-bubble { background: linear-gradient(135deg, #f3edff, #fdf3f8); border: 1px solid #e5d8fd; border-radius: 16px 4px 16px 16px; }
+  .ag-bubble b { color: #7c3aed; }
+  .ag-bubble .ag-tag { display: inline-block; font-size: 11px; font-weight: 700; background: #efe6ff; color: #7c3aed; border-radius: 99px; padding: 1px 8px; margin: 1px 3px 1px 0; }
+  .ag-bubble .ag-line { display: block; margin: 3px 0; }
+  .ag-bubble .ag-bar { display: inline-block; height: 9px; border-radius: 99px; vertical-align: middle; background: linear-gradient(90deg, #8b5cf6, #ec4899); }
+  .ag-bubble .ag-ok { color: #15803d; font-weight: 700; }
+  .ag-bubble .ag-warn { color: #d97706; font-weight: 700; }
+  .ag-bubble .ag-bad { color: #dc2626; font-weight: 700; }
+  .ag-bubble ul { margin: 4px 0 2px 18px; padding: 0; }
+  .ag-bubble li { margin: 2px 0; }
+  .ag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 2px 2px; }
+  .ag-chip { border: 1px solid #ddd0fa; background: #faf7ff; color: #7c3aed; border-radius: 999px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: .18s; }
+  .ag-chip:hover { background: #efe6ff; border-color: #8b5cf6; }
+  .agent-inputbar { display: flex; gap: 8px; margin-top: 8px; }
+  .agent-inputbar input { flex: 1; border-color: #ddd0fa; border-radius: 999px; }
+  .agent-inputbar button { flex: none; }
+  .ag-type { font-size: 12px; color: #a78bfa; padding: 4px 6px; }
 </style>
 </head>
 <body>
@@ -636,10 +685,39 @@
     <div id="recMeals"></div>
   </section>
 
+  <!-- ============ 第 4 页：分析助手（紫色主题） ============ -->
+  <section class="page" id="pageAgent">
+    <div class="card agent-hero">
+      <div class="cal-label">智能分析助手</div>
+      <div style="font-size:15px;font-weight:800;margin-top:2px">用一句话，问我饮食或花销</div>
+      <div class="ah-nums">
+        <div class="ah-num"><b id="agNumSpent">¥0</b><span>本月已花</span></div>
+        <div class="ah-num"><b id="agNumLeft">--</b><span>距预算</span></div>
+        <div class="ah-num"><b id="agNumKcal">0</b><span>今日 kcal</span></div>
+      </div>
+    </div>
+    <div class="card agent-chat">
+      <div id="agentLog"></div>
+      <div class="ag-chips" id="agChips">
+        <button type="button" class="ag-chip" data-q="我这个月花了多少，超预算了吗？">本月花销</button>
+        <button type="button" class="ag-chip" data-q="钱主要花在了哪里？">花在哪了</button>
+        <button type="button" class="ag-chip" data-q="今天吃了多少热量？三餐怎么安排？">今日饮食</button>
+        <button type="button" class="ag-chip" data-q="我该怎么吃才健康？">怎么吃健康</button>
+        <button type="button" class="ag-chip" data-q="我的消费健康吗？有什么建议？">消费建议</button>
+      </div>
+      <div class="agent-inputbar">
+        <input type="text" id="agInput" maxlength="80" placeholder="问我：比如「早餐吃什么好」「哪几天花钱最多」">
+        <button class="btn primary" id="agSend">提问</button>
+      </div>
+      <div class="ag-type">助手基于你的本地记账数据做规则分析，不联网、不上传。</div>
+    </div>
+  </section>
+
   <nav class="appnav">
     <button class="navbtn on" id="tabHome">记账本</button>
     <button class="navbtn" id="tabCal">热量计量</button>
     <button class="navbtn" id="tabRec">智能推荐</button>
+    <button class="navbtn" id="tabAgent">分析助手</button>
   </nav>
 
   <footer class="meta">数据保存在当前浏览器的本地存储中；更换浏览器或清除浏览器数据前请先"导出数据"备份。</footer>
@@ -1394,20 +1472,27 @@
 
   var $pageRec = document.getElementById("pageRec");
   var $tabRec = document.getElementById("tabRec");
+  var $pageAgent = document.getElementById("pageAgent");
+  var $tabAgent = document.getElementById("tabAgent");
 
   function showTab(which) {
     var isCal = which === "cal";
     var isRec = which === "rec";
+    var isAgent = which === "agent";
     document.body.classList.toggle("cal", isCal);
     document.body.classList.toggle("blue", isRec);
+    document.body.classList.toggle("agent", isAgent);
     $pageHome.classList.toggle("active", which === "home");
     $pageCal.classList.toggle("active", isCal);
     $pageRec.classList.toggle("active", isRec);
+    $pageAgent.classList.toggle("active", isAgent);
     $tabHome.classList.toggle("on", which === "home");
     $tabCal.classList.toggle("on", isCal);
     $tabRec.classList.toggle("on", isRec);
+    $tabAgent.classList.toggle("on", isAgent);
     if (isCal) renderCal();
     if (isRec) renderRec();
+    if (isAgent) renderAgentHero();
   }
 
   // 结合名称关键词与记录时间，把食物归到早 / 中 / 晚（其余为加餐）
@@ -2039,9 +2124,335 @@
     $recMeals.innerHTML = mealsHtml;
   }
 
+  // ==================== 第 4 页：内置分析助手（规则引擎，不联网） ====================
+  var $agLog = document.getElementById("agentLog");
+  var $agInput = document.getElementById("agInput");
+  var $agSend = document.getElementById("agSend");
+  var $agNumSpent = document.getElementById("agNumSpent");
+  var $agNumLeft = document.getElementById("agNumLeft");
+  var $agNumKcal = document.getElementById("agNumKcal");
+  var agentBooted = false;
+
+  function agMoneyRow(e) { return e.amount; }
+  function agDayRows(dayStr) {
+    ensureDb();
+    return db.expenses.filter(function (e) { return e.date === dayStr; })
+      .slice().sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+  }
+  function agMonthStats(mk) {
+    var days = daysInMonth(mk);
+    var budget = budgetOf(mk);
+    var daily = budget > 0 ? budget / days : 0;
+    var spent = spentOfMonth(mk);
+    var today = todayStr();
+    var isCur = mk === today.slice(0, 7);
+    var spentToday = isCur ? spentOfDate(today) : 0;
+    var dayNum = isCur ? parseInt(today.slice(8), 10) : 0;
+    var restDays = isCur ? Math.max(0, days - dayNum) : 0;
+    var rest = budget > 0 ? Math.max(0, budget - spent) : 0;
+    var restAvg = rest > 0 && restDays > 0 ? rest / restDays : 0;
+    return { days: days, budget: budget, daily: daily, spent: spent, spentToday: spentToday, isCur: isCur, dayNum: dayNum, restDays: restDays, rest: rest, restAvg: restAvg, today: today, mk: mk };
+  }
+  function agAggByName(rows) {
+    var m = {};
+    rows.forEach(function (e) {
+      var key = e.name || "未命名";
+      if (!m[key]) m[key] = { name: key, amt: 0, n: 0 };
+      m[key].amt += e.amount;
+      m[key].n++;
+    });
+    var arr = Object.keys(m).map(function (k) { return m[k]; });
+    arr.sort(function (a, b) { return b.amt - a.amt; });
+    return arr;
+  }
+  function agBarPct(v, max) {
+    if (!(v > 0) || !(max > 0)) return 0;
+    return Math.min(100, v / max * 100);
+  }
+  function agTag(t) { return '<span class="ag-tag">' + t + "</span>"; }
+  function agL(html) { return '<span class="ag-line">' + html + "</span>"; }
+  function agBar(w, cls) { return '<i class="ag-bar ' + (cls || "") + '" style="width:' + Math.round(w) + '%"></i>'; }
+  function agAddUser(text) {
+    if (!$agLog) return;
+    var d = document.createElement("div");
+    d.className = "ag-msg user";
+    d.innerHTML = '<span class="ag-avatar">我</span><span class="ag-bubble">' + esc(text) + "</span>";
+    $agLog.appendChild(d);
+    $agLog.scrollTop = $agLog.scrollHeight;
+  }
+  function agAddBot(html) {
+    if (!$agLog) return;
+    var d = document.createElement("div");
+    d.className = "ag-msg";
+    d.innerHTML = '<span class="ag-avatar">析</span><span class="ag-bubble">' + html + "</span>";
+    $agLog.appendChild(d);
+    $agLog.scrollTop = $agLog.scrollHeight;
+  }
+  function agThinking() {
+    var d = document.createElement("div");
+    d.className = "ag-msg";
+    d.id = "agThink";
+    d.innerHTML = '<span class="ag-avatar">析</span><span class="ag-bubble ag-type">正在分析你的记账数据…</span>';
+    $agLog.appendChild(d);
+    $agLog.scrollTop = $agLog.scrollHeight;
+  }
+  function agRemoveThink() {
+    var t = document.getElementById("agThink");
+    if (t && t.parentNode) t.parentNode.removeChild(t);
+  }
+  function renderAgentHero() {
+    ensureDb();
+    var mk = curMonth;
+    var st = agMonthStats(mk);
+    $agNumSpent.textContent = fmt(st.spent);
+    $agNumLeft.textContent = st.budget > 0 ? (st.rest > 0 ? fmt(st.rest) : "已超支") : "未设预算";
+    var kc = 0;
+    agDayRows(todayStr()).forEach(function (e) { kc += recKcal(e); });
+    $agNumKcal.textContent = Math.round(kc);
+    if (!agentBooted) {
+      agentBooted = true;
+      agAddBot(
+        agTag("你好") + "我是你的本地记账助手，不看你的数据也能帮你算："
+        + agL("可以问我「本月花销」「花在哪了」「今日饮食」「怎么吃更健康」「消费建议」，或直接打字提问。")
+        + agL("所有分析只在你的浏览器里完成，不会联网上传。")
+      );
+    }
+  }
+  function agAnswerMonth(q) {
+    var mk = curMonth;
+    var st = agMonthStats(mk);
+    var h = agTag("本月花销") + agL("本月「<b>" + mk + "</b>」已花 <b>" + fmt(st.spent) + "</b>");
+    if (st.budget > 0) {
+      var pct = st.spent / st.budget * 100;
+      h += agL("预算 " + fmt(st.budget) + "，已用 " + Math.round(pct) + "%" + agBar(agBarPct(st.spent, st.budget), st.spent > st.budget ? "ag-bad" : (pct >= 85 ? "ag-warn" : "ag-ok")));
+      if (st.spent > st.budget) h += agL("已超支 <b class='ag-bad'>" + fmt(st.spent - st.budget) + "</b>，建议接下来先控制非必要开销。");
+      else if (st.restDays > 0) h += agL("剩余 " + st.restDays + " 天还可花 " + fmt(st.rest) + "，约每天 <b>" + fmt(st.restAvg) + "</b>。");
+      else h += agL("本月已到尾声，预算内还有富余 " + fmt(st.rest) + "。");
+    } else {
+      h += agL("你还没给本月设预算，回「记账本」页填写预算后我能帮你盯每日额度。");
+    }
+    if (st.isCur && st.daily > 0) {
+      h += agL("今天额度 " + fmt(st.daily) + "，目前已花 <b>" + fmt(st.spentToday) + "</b>" + (st.spentToday > st.daily ? "（已超当天额度）" : "，还有富余。"));
+    }
+    return h;
+  }
+  function agAnswerWhere(q) {
+    var mk = curMonth;
+    var rows = monthExpenses(mk);
+    if (!rows.length) return agTag("花在哪") + agL("这个月还没有记录，先记几笔我才能帮你分析哦。");
+    var foodA = 0, otherA = 0;
+    var mealM = { 早餐: 0, 午餐: 0, 晚餐: 0, 加餐: 0 };
+    rows.forEach(function (e) {
+      if (catOf(e) === "food") {
+        foodA += e.amount;
+        var mm = e.meal || mealOf(e.name, e.ts);
+        if (mealM[mm] !== undefined) mealM[mm] += e.amount;
+      } else otherA += e.amount;
+    });
+    var total = foodA + otherA;
+    var h = agTag("花销结构");
+    h += agL("吃饭花销 " + fmt(foodA) + "（" + Math.round(foodA / total * 100) + "%）" + agBar(agBarPct(foodA, total), "ag-ok") + " 其他花销 " + fmt(otherA) + "（" + Math.round(otherA / total * 100) + "%）" + agBar(agBarPct(otherA, total)));
+    if (foodA > 0) {
+      var keys = ["早餐", "午餐", "晚餐", "加餐"];
+      var parts = [];
+      keys.forEach(function (k) {
+        if (mealM[k] > 0) parts.push(k + " " + fmt(mealM[k]));
+      });
+      h += agL("吃饭里：<b>" + parts.join(" · ") + "</b>");
+    }
+    var tops = agAggByName(rows).slice(0, 5);
+    if (tops.length) {
+      h += agL("花销最高的几笔名目：");
+      h += "<ul>";
+      tops.forEach(function (t) { h += "<li><b>" + esc(t.name) + "</b> · 累计 " + fmt(t.amt) + "（" + t.n + " 笔）</li>"; });
+      h += "</ul>";
+    }
+    var byDay = {};
+    rows.forEach(function (e) { if (!byDay[e.date]) byDay[e.date] = 0; byDay[e.date] += e.amount; });
+    var dayArr = Object.keys(byDay).map(function (d) { return { d: d, v: byDay[d] }; }).sort(function (a, b) { return b.v - a.v; });
+    if (dayArr.length) h += agL("单日花销最多的是 <b>" + dayArr[0].d.slice(5) + "</b>：" + fmt(dayArr[0].v) + "。");
+    return h;
+  }
+  function agAnswerTodayDiet(q) {
+    var rows = agDayRows(todayStr());
+    var food = rows.filter(function (e) { return catOf(e) === "food"; });
+    var total = food.reduce(function (s, e) { return s + recKcal(e); }, 0);
+    var target = db.calTarget > 0 ? db.calTarget : 2000;
+    var h = agTag("今日饮食");
+    if (!food.length) {
+      h += agL("今天还没有记录吃东西，去「记账本」记一笔食物就能算热量。");
+      h += agL("如果不知道吃什么，可以切到「智能推荐」页，会按你的目标给出三餐食谱。");
+      return h;
+    }
+    h += agL("今日摄入约 <b>" + Math.round(total) + " kcal</b>，目标 " + target + " kcal" + agBar(agBarPct(total, target), total > target ? "ag-bad" : (total > target * .9 ? "ag-warn" : "ag-ok")));
+    h += (total > target ? agL("已超出目标 " + Math.round(total - target) + " kcal，" + "建议下一餐减量或用清淡做法。") : agL("离目标还差 " + Math.round(target - total) + " kcal，可适当补充优质蛋白或蔬果。"));
+    var mealM = { 早餐: 0, 午餐: 0, 晚餐: 0, 加餐: 0 };
+    food.forEach(function (e) {
+      var mm = e.meal || mealOf(e.name, e.ts);
+      if (mealM[mm] !== undefined) mealM[mm] += recKcal(e);
+    });
+    var frac = { 早餐: 0.3, 午餐: 0.4, 晚餐: 0.3 };
+    ["早餐", "午餐", "晚餐"].forEach(function (mk) {
+      var ideal = target * frac[mk];
+      var got = mealM[mk];
+      var flag = got > ideal * 1.2 ? "（偏多）" : got < ideal * .5 ? "（偏少）" : "";
+      h += agL(mk + "约 " + Math.round(got) + " kcal，建议 " + Math.round(ideal) + " kcal" + flag);
+    });
+    if (mealM["加餐"] > 0) h += agL("加餐约 " + Math.round(mealM["加餐"]) + " kcal。");
+    var bads = [];
+    food.forEach(function (e) {
+      var u = unhealthOf(e.name);
+      if (u && !bads.some(function (b) { return b.k === u.k; })) bads.push(u);
+    });
+    if (bads.length) {
+      h += agL("注意今天有：<b class='ag-bad'>" + bads.map(function (b) { return b.tag + "（" + esc(b.k) + "）"; }).join("、") + "</b>，可用清蒸/少油做法替代。");
+    }
+    return h;
+  }
+  function agAnswerHowEat(q) {
+    ensureDb();
+    var goal = getGoalInfo();
+    var target = db.calTarget > 0 ? db.calTarget : 2000;
+    var h = agTag("怎么吃更健康");
+    h += agL("根据你的记录，推荐方案：<b>" + goal.label + "</b>，每日热量约 <b>" + target + " kcal</b>。");
+    h += agL("建议早中晚餐按 3 : 4 : 3 分配：早餐 " + Math.round(target * .3) + "、午餐 " + Math.round(target * .4) + "、晚餐 " + Math.round(target * .3) + " kcal。");
+    h += agL("每餐先保证 <b>一掌心蛋白质</b>（蛋奶鱼豆肉）+ <b>两拳蔬菜</b> + 适量主食，少油炸、少加糖饮料。");
+    // 结合近 30 天内的不健康项给出针对性提醒
+    var m = todayStr().slice(0, 7);
+    var rows = db.expenses.filter(function (e) { return e.date.indexOf(m) === 0; });
+    var cnt = 0;
+    var tagSet = {};
+    rows.forEach(function (e) {
+      var u = unhealthOf(e.name);
+      if (u) { cnt++; tagSet[u.tag] = true; }
+    });
+    if (cnt > 0) {
+      h += agL("本月你记到 " + cnt + " 笔高油高糖类（" + Object.keys(tagSet).slice(0, 3).join("、") + "），可以试着每周减少 1-2 次。");
+    } else {
+      h += agL("本月没发现明显的油炸/高糖记录，继续保持清淡饮食很棒。");
+    }
+    // 基于体重的定制小建议
+    if (goal.key === "lose") h += agL("你在减脂期：主食优先选粗粮，睡前 3 小时尽量不再进食，多喝水。");
+    else if (goal.key === "gain") h += agL("你在增肌增重：正餐之间可加 1 顿蛋白质加餐，训练后半小时内补充碳水+蛋白。");
+    else h += agL("当前以维持体重为主，规律三餐、不要长期饿一顿饱一顿即可。");
+    return h;
+  }
+  function agAnswerConsumeAdvice(q) {
+    var mk = curMonth;
+    var st = agMonthStats(mk);
+    var rows = monthExpenses(mk);
+    var h = agTag("消费建议");
+    if (!rows.length) {
+      h += agL("本月还没有消费记录。设好预算后，每天看一眼「记账本」首页的额度条就能控制开销。");
+      return h;
+    }
+    var other = rows.filter(function (e) { return catOf(e) !== "food"; });
+    var otherA = other.reduce(function (s, e) { return s + e.amount; }, 0);
+    var foodA = st.spent - otherA;
+    h += agL("本月消费 " + fmt(st.spent) + "，其中非餐饮类（网购、交通等）约 " + fmt(otherA) + "，占 " + (st.spent > 0 ? Math.round(otherA / st.spent * 100) : 0) + "%。");
+    if (st.budget > 0) {
+      if (st.spent > st.budget) h += agL("<b class='ag-bad'>已超预算 " + fmt(st.spent - st.budget) + "</b>，建议先暂停非必需品购买，把额度留给吃饭和必要开支。");
+      else if (st.restAvg > 0 && st.daily > 0) h += agL("预算内剩余每天可用 " + fmt(st.restAvg) + "。若想再省一点，优先压缩「其他花销」里的大额项。");
+    }
+    var tops = agAggByName(other).slice(0, 3);
+    if (tops.length) {
+      h += agL("非餐饮支出靠前的名目：");
+      h += "<ul>";
+      tops.forEach(function (t) { if (t.amt > 0) h += "<li>" + esc(t.name) + " · " + fmt(t.amt) + "</li>"; });
+      h += "</ul>";
+    }
+    h += agL("小技巧：把想买的东西放 1 天再决定；同一商品比价后再下单；固定开销列个清单能减少冲动消费。");
+    return h;
+  }
+  function agAnswerRecent(q) {
+    var t = todayStr();
+    var sum = 0, n = 0, foodN = 0;
+    var names = {};
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      var key = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+      agDayRows(key).forEach(function (e) {
+        sum += e.amount; n++;
+        if (catOf(e) === "food") {
+          foodN++;
+          var kk = e.name || "";
+          if (!names[kk]) names[kk] = 0;
+          names[kk]++;
+        }
+      });
+    }
+    var h = agTag("最近 7 天");
+    if (!n) {
+      h += agL("最近 7 天没有记录。建议坚持每天记账，积累后我能给出更准的建议。");
+      return h;
+    }
+    h += agL("近 7 天共记 <b>" + n + " 笔</b>，合计 " + fmt(sum) + "，日均约 " + fmt(sum / 7) + "。");
+    h += agL("其中吃饭相关 " + foodN + " 笔。");
+    var arr = Object.keys(names).map(function (k) { return { k: k, n: names[k] }; }).sort(function (a, b) { return b.n - a.n; }).slice(0, 5);
+    if (arr.length) {
+      h += agL("出现最多的食物：");
+      h += "<ul>";
+      arr.forEach(function (a) { h += "<li>" + esc(a.k) + " × " + a.n + "</li>"; });
+      h += "</ul>";
+    }
+    return h;
+  }
+  function agClassify(q) {
+    var s = String(q || "");
+    function has(keys) { return keys.some(function (k) { return s.indexOf(k) !== -1; }); }
+    if (has(["花在哪", "花在什么", "花在了哪里", "哪里", "哪些", "什么项目", "名目", "买了什么", "分类", "结构", "哪类", "大头", "都花", "分布", "怎么花"])) return "where";
+    if (has(["怎么吃", "吃健康", "健康吃", "食谱", "怎么搭配", "吃什么好", "吃什么", "减脂", "增肌", "减肥", "瘦", "营养", "建议吃", "饮食"])) return "eat";
+    if (has(["热量", "卡路里", "kcal", "千卡", "吃了多少", "摄入", "三餐", "早餐", "午餐", "晚餐", "加餐", "吃了什么", "今天吃"])) return "diet";
+    if (has(["最近", "近7天", "近一周", "前7天", "频率", "习惯", "这周"])) return "recent";
+    if (has(["花", "预算", "钱", "超支", "额度", "用了多少", "剩", "超了", "这个月", "本月"])) return "month";
+    if (has(["省钱", "省一省", "减少花", "少花钱", "消费建议", "开销", "控制", "理性", "剁手", "买太多", "超预算", "花超", "消费", "建议"])) return "advice";
+    return "fallback";
+  }
+  function agAnswer(text) {
+    var t = agClassify(text);
+    var html = "";
+    if (t === "where") html = agAnswerWhere(text);
+    else if (t === "diet") html = agAnswerTodayDiet(text);
+    else if (t === "eat") html = agAnswerHowEat(text);
+    else if (t === "advice") html = agAnswerConsumeAdvice(text);
+    else if (t === "recent") html = agAnswerRecent(text);
+    else if (t === "month") html = agAnswerMonth(text);
+    else {
+      html = agTag("没完全听懂") + agL("我可以帮你分析这些：<b>本月花销 / 花在哪了 / 今日饮食 / 怎么吃更健康 / 消费建议 / 最近 7 天</b>。")
+        + agL("也可以换个说法再问一次，比如「我这个月超支了吗」「早餐吃什么好」。");
+    }
+    return html;
+  }
+  function agAsk(text) {
+    text = String(text || "").trim();
+    if (!text) return;
+    agAddUser(text);
+    agThinking();
+    setTimeout(function () {
+      agRemoveThink();
+      agAddBot(agAnswer(text));
+      renderAgentHero();
+    }, 320);
+  }
+  function agSendNow() {
+    var v = $agInput ? $agInput.value : "";
+    if (!String(v).trim()) return;
+    agAsk(v);
+    if ($agInput) $agInput.value = "";
+  }
+  document.getElementById("agSend").addEventListener("click", agSendNow);
+  document.getElementById("agInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") agSendNow();
+  });
+  document.querySelectorAll("#agChips .ag-chip").forEach(function (c) {
+    c.addEventListener("click", function () { agAsk(c.getAttribute("data-q") || ""); });
+  });
+
   $tabHome.addEventListener("click", function () { showTab("home"); });
   $tabCal.addEventListener("click", function () { showTab("cal"); });
   $tabRec.addEventListener("click", function () { showTab("rec"); });
+  $tabAgent.addEventListener("click", function () { showTab("agent"); });
 
   // 第三页饮食方案切换：减脂 / 增肌 / 健康 / 均衡 / 自动（随体重目标）
   document.querySelectorAll(".dietseg .segp").forEach(function (btn) {

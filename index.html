@@ -1058,8 +1058,9 @@
 
       items.forEach(function (e) {
         html += '<div class="item">';
-        if (e.img) {
-          html += '<img class="thumb" src="' + e.img + '" alt="">';
+        var simg = safeImg(e.img);
+        if (simg) {
+          html += '<img class="thumb" src="' + simg + '" alt="">';
         } else {
           html += '<div class="thumb" style="display:flex;align-items:center;justify-content:center">' + PLACEHOLDER + '</div>';
         }
@@ -1084,6 +1085,11 @@
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+  // 仅允许本地 data:image 图片地址，防止恶意数据注入外部/脚本地址
+  function safeImg(u) {
+    if (typeof u === "string" && u.indexOf("data:image/") === 0 && u.indexOf("base64,") !== -1) return u;
+    return "";
   }
 
   function renderAll() {
